@@ -25,7 +25,7 @@
       ],
       "env": {
         "DATA_DIR": "/Users/gongsaero/Desktop/notion-cms-project/shrimp_data",
-        "TEMPLATES_USE": "en",
+        "TEMPLATES_USE": "ko",
         "ENABLE_GUI": "true"
       }
     }
