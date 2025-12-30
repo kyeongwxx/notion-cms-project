@@ -1,0 +1,19 @@
+# Test files
+**/__tests__/**
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Test utilities
+lib/test-utils.tsx
+vitest.config.mts
+vitest.setup.tsx
+
+# Build output
+.next/
+out/
+dist/
+
+# Dependencies
+node_modules/

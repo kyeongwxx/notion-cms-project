@@ -24,7 +24,7 @@ export function renderWithProviders(
  * const variants = ['default', 'destructive', 'outline'] as const
  * testAllVariants(Button, 'variant', variants, { children: 'Click' })
  */
-export function testAllVariants<T extends Record<string, any>>(
+export function testAllVariants<T extends Record<string, unknown>>(
   Component: React.ComponentType<T>,
   variantProp: keyof T,
   variants: Array<T[keyof T]>,
