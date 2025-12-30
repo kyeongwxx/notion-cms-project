@@ -2,40 +2,44 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Context
+- PRD 문서: @docs/PRD.md
+- 개발 로드맵: @docs/ROADMAP.md
+
 ## 1. 프로젝트 개요
 
-Next.js 16과 React 19를 기반으로 한 한국어 마케팅/SaaS 스타터 템플릿입니다. TypeScript strict 모드, Tailwind CSS v4, shadcn/ui 컴포넌트를 사용하며 다크 모드와 접근성을 지원합니다.
+Next.js 16과 React 19를 기반으로 한 **Notion CMS 개인 블로그** 프로젝트입니다. Notion을 Headless CMS로 활용하여 맛집, 여행, 기술 등 다양한 주제의 블로그 콘텐츠를 관리합니다. TypeScript strict 모드, Tailwind CSS v4, shadcn/ui 컴포넌트를 사용하며 다크 모드와 접근성을 지원합니다.
 
 **주요 기술 스택:**
 - Next.js 16.1.0 (App Router) + React 19.2.3
 - TypeScript 5 (strict 모드)
 - Tailwind CSS v4 + shadcn/ui
 - Vitest 3.2.4 + React Testing Library
-- react-hook-form + zod (폼 검증)
+- @notionhq/client (Notion API - Phase 1에서 추가 예정)
 - next-themes (다크 모드)
 
 **프로젝트 구조 (주요 디렉토리):**
 ```
-claude-nextjs-starters/
+notion-cms-project/
 ├── app/                          # Next.js App Router
-│   ├── (marketing)/              # 마케팅 페이지 Route Group
-│   │   ├── page.tsx              # 홈페이지
-│   │   ├── about/                # 소개 페이지
-│   │   ├── contact/              # 연락처 페이지
-│   │   └── feature/              # 기능 페이지
+│   ├── (marketing)/              # 블로그 페이지 Route Group
+│   │   ├── page.tsx              # 홈 (블로그 글 목록)
+│   │   └── layout.tsx            # 블로그 레이아웃
 │   ├── layout.tsx                # 루트 레이아웃
 │   └── globals.css               # Tailwind v4 전역 스타일
 │
 ├── components/                   # React 컴포넌트
 │   ├── ui/                       # 기본 UI (shadcn/ui)
 │   ├── layout/                   # 레이아웃 컴포넌트
-│   ├── marketing/                # 마케팅 컴포넌트
 │   └── theme/                    # 테마 관리
 │
 ├── lib/                          # 유틸리티 함수
 │   ├── utils.ts                  # cn() 함수
 │   ├── constants.ts              # 사이트 설정
 │   └── test-utils.tsx            # 테스트 헬퍼
+│
+├── docs/                         # 프로젝트 문서
+│   └── PRD.md                    # 프로젝트 요구사항 정의서
 │
 ├── .claude/                      # Claude Code 통합
 │   ├── agents/                   # 커스텀 에이전트
@@ -81,12 +85,9 @@ npm run lint             # ESLint 검사
 **app/ (Next.js App Router)**
 - `app/layout.tsx` - 루트 레이아웃 (ThemeProvider 적용)
 - `app/globals.css` - Tailwind v4 전역 스타일 및 CSS 변수
-- `app/(marketing)/` - 마케팅 페이지 Route Group (괄호는 URL에 포함되지 않음)
-  - `page.tsx` - 홈페이지 (HeroSection, FeatureGrid, CtaSection)
-  - `about/` - 소개 페이지
-  - `contact/` - 연락처 페이지 (ContactForm 포함)
-  - `feature/` - 기능 상세 페이지
-  - `layout.tsx` - Header와 Footer를 포함한 마케팅 레이아웃
+- `app/(marketing)/` - 블로그 페이지 Route Group (괄호는 URL에 포함되지 않음)
+  - `page.tsx` - 홈 페이지 (블로그 글 목록 플레이스홀더)
+  - `layout.tsx` - Header와 Footer를 포함한 블로그 레이아웃
 
 **lib/ (유틸리티)**
 - `lib/utils.ts` - `cn()` 함수 (clsx + tailwind-merge)
@@ -106,14 +107,15 @@ npm run lint             # ESLint 검사
 Next.js 16 App Router를 사용하며, Route Groups를 활용하여 레이아웃을 분리합니다.
 
 **Route Groups 패턴:**
-- `(marketing)` - 마케팅 페이지 그룹 (Header + Footer 레이아웃)
-- 괄호는 URL에 포함되지 않음 (예: `/about`는 `/(marketing)/about`에 매핑)
+- `(marketing)` - 블로그 페이지 그룹 (Header + Footer 레이아웃)
+- 괄호는 URL에 포함되지 않음 (예: `/` 는 `/(marketing)/page.tsx`에 매핑)
 
-**주요 라우트:**
-- `/` - 홈페이지 (Hero + Features + CTA)
-- `/about` - 소개 페이지
-- `/feature` - 기능 상세 페이지
-- `/contact` - 연락처 페이지 (폼 포함)
+**주요 라우트 (현재):**
+- `/` - 홈페이지 (블로그 글 목록 플레이스홀더)
+
+**계획된 라우트 (Phase 4 구현 예정):**
+- `/posts/[slug]` - 글 상세 페이지
+- `/category/[category]` - 카테고리별 글 목록
 
 ### 3.3 컴포넌트 계층
 
@@ -135,16 +137,17 @@ components/
 │   ├── section.tsx               # spacing variants, 테마 variant
 │   └── mobile-nav.tsx            # "use client" - Sheet 기반 모바일 네비게이션
 │
-├── marketing/                    # 도메인 특화 마케팅 컴포넌트
-│   ├── hero-section.tsx          # 히어로 섹션
-│   ├── feature-grid.tsx          # 기능 그리드
-│   ├── feature-card.tsx          # 기능 카드
-│   ├── cta-section.tsx           # Call-to-Action 섹션
-│   └── contact-form.tsx          # "use client" - react-hook-form + zod 검증
-│
 └── theme/                        # 테마 관리
     ├── theme-provider.tsx        # next-themes 래퍼
     └── theme-toggle.tsx          # "use client" - 다크/라이트 모드 토글
+```
+
+**Phase 3에서 추가 예정:**
+- `components/blog/` - 블로그 특화 컴포넌트
+  - `post-card.tsx` - 블로그 글 카드
+  - `post-grid.tsx` - 글 목록 그리드
+  - `category-filter.tsx` - 카테고리 필터
+  - `search-bar.tsx` - 검색창
 ```
 
 ---
@@ -380,24 +383,10 @@ describe('Button', () => {
 - **lucide-react 0.562.0** - 아이콘 라이브러리
 - **next-themes 0.4.6** - 다크 모드 관리
 
-### 6.4 폼 및 검증
+### 6.4 CMS 및 데이터 (Phase 1에서 추가 예정)
 
-- **react-hook-form 7.68.0** - 폼 관리
-- **zod 4.2.1** - 스키마 검증
-- **@hookform/resolvers** - react-hook-form과 zod 통합
-
-**ContactForm 예시:**
-```typescript
-const formSchema = z.object({
-  name: z.string().min(2, '이름은 최소 2자 이상이어야 합니다'),
-  email: z.string().email('올바른 이메일 주소를 입력해주세요'),
-  message: z.string().min(10, '메시지는 최소 10자 이상이어야 합니다')
-})
-
-const form = useForm<z.infer<typeof formSchema>>({
-  resolver: zodResolver(formSchema)
-})
-```
+- **@notionhq/client** - Notion API 클라이언트
+- **react-notion-x** (선택 사항) - Notion 블록 렌더링
 
 ### 6.5 테스팅
 
@@ -415,7 +404,7 @@ const form = useForm<z.infer<typeof formSchema>>({
 1. **서버 컴포넌트 우선**
    - 기본적으로 서버 컴포넌트 사용
    - 상호작용이 필요한 경우에만 `"use client"` 추가
-   - 예: Header, MobileNav, ThemeToggle, ContactForm
+   - 예: Header, MobileNav, ThemeToggle
 
 2. **Route Groups**
    - 괄호 `(groupname)`를 사용해 레이아웃 분리
@@ -831,3 +820,46 @@ export interface ButtonProps
 - Open Graph 이미지 설정
 - 적절한 title, description
 - 구조화된 데이터 (JSON-LD)
+- Sitemap 및 robots.txt 설정 (Phase 6)
+
+---
+
+## 11. 구현 로드맵
+
+### ✅ Phase 0: 프로젝트 초기화 (완료)
+- [x] 마케팅 관련 페이지 제거 (about, contact, feature)
+- [x] 마케팅 컴포넌트 제거 (HeroSection, CtaSection, FeatureCard, FeatureGrid, ContactForm)
+- [x] Auth 디렉토리 제거
+- [x] 블로그 구조로 변경
+- [x] lib/constants.ts 블로그 설정 업데이트
+- [x] 홈 페이지를 블로그 글 목록 플레이스홀더로 변경
+- [x] 문서 업데이트 (README.md, CLAUDE.md)
+
+### 🚧 Phase 1: 환경 설정 (다음 단계)
+- [ ] Notion API 패키지 설치 (`@notionhq/client`)
+- [ ] Notion 데이터베이스 생성 및 샘플 데이터 입력
+- [ ] Notion API 키 발급 및 환경 변수 설정 (`.env.local`)
+- [ ] `.env.example` 파일 생성
+
+### 📅 Phase 2: API 연동 (예정)
+- [ ] `lib/notion/` 디렉토리 생성
+- [ ] Notion API 클라이언트 초기화 (`lib/notion/client.ts`)
+- [ ] 글 목록 조회 함수 구현 (`getPublishedPosts()`)
+- [ ] 글 상세 조회 함수 구현 (`getPostBySlug()`)
+- [ ] 카테고리 목록 조회 함수 구현 (`getCategories()`)
+- [ ] API 응답 데이터 TypeScript 타입 정의 (`lib/notion/types.ts`)
+
+### 📅 Phase 3: UI 컴포넌트 개발 (예정)
+- [ ] `components/blog/` 디렉토리 생성
+- [ ] 글 카드 컴포넌트 (`PostCard`)
+- [ ] 글 목록 그리드 컴포넌트 (`PostGrid`)
+- [ ] 카테고리 필터 컴포넌트 (`CategoryFilter`)
+- [ ] 검색창 컴포넌트 (`SearchBar`)
+- [ ] 각 컴포넌트 테스트 작성
+
+### 📅 Phase 4: 페이지 구현 (예정)
+- [ ] 홈 페이지 실제 Notion 데이터 연동 (`app/(marketing)/page.tsx`)
+- [ ] 글 상세 페이지 (`app/posts/[slug]/page.tsx`)
+- [ ] 카테고리 페이지 (`app/category/[category]/page.tsx`)
+- [ ] Notion 블록 렌더링 (react-notion-x 또는 직접 구현)
+- [ ] 메타데이터 및 SEO 최적화

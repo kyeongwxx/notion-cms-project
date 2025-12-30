@@ -1,6 +1,6 @@
 export const siteConfig = {
-  name: "Next.js 스타터",
-  description: "Next.js 16으로 구축된 모던 웹 애플리케이션 스타터킷",
+  name: "개인 블로그",
+  description: "Notion CMS 기반 개인 블로그 - 맛집, 여행, 기술 등 다양한 주제를 다룹니다",
   url: "https://example.com",
   ogImage: "https://example.com/og.jpg",
   links: {
@@ -10,8 +10,6 @@ export const siteConfig = {
 };
 
 export const mainNav = [
-  { title: "소개", href: "/about" },
-  { title: "기능", href: "/feature" },
-  { title: "예제", href: "/examples" },
-  { title: "연락처", href: "/contact" },
+  { title: "홈", href: "/" },
+  { title: "카테고리", href: "/category" },
 ];
