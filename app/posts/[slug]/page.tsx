@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { PostCard } from '@/components/blog/post-card'
 import { getPostBySlug, getPostsByCategory } from '@/lib/mock/posts'
+import { NotionRenderer } from '@/lib/notion/renderer'
 
 interface PageProps {
   params: Promise<{
@@ -172,15 +173,21 @@ export default async function PostPage({ params }: PageProps) {
               </p>
             )}
 
-            {/* 플레이스홀더 메시지 */}
-            <div className="my-12 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 p-8 text-center">
-              <p className="text-base font-medium text-muted-foreground">
-                📝 본문 내용은 Phase 3에서 Notion 블록 렌더러로 표시됩니다.
-              </p>
-              <p className="mt-2 text-sm text-muted-foreground/70">
-                현재는 더미 데이터 기반 UI 테스트 단계입니다.
-              </p>
-            </div>
+            {/* Notion 블록 렌더러 (Task 011) */}
+            {post.content && post.content.length > 0 ? (
+              // @ts-expect-error - NotionRenderer는 서버 컴포넌트 (async)
+              <NotionRenderer blocks={post.content} />
+            ) : (
+              // 콘텐츠가 없을 때 플레이스홀더
+              <div className="my-12 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/30 p-8 text-center">
+                <p className="text-base font-medium text-muted-foreground">
+                  📝 본문 내용이 없습니다.
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground/70">
+                  Notion 페이지에 콘텐츠를 추가해주세요.
+                </p>
+              </div>
+            )}
           </article>
 
           {/* 관련 글 섹션 */}

@@ -12,7 +12,8 @@
 
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 import { Container } from '@/components/layout/container'
 import { Section } from '@/components/layout/section'
@@ -37,10 +38,16 @@ const POSTS_PER_PAGE = 6
  * 홈 페이지 컴포넌트
  */
 export default function HomePage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // URL에서 현재 페이지 읽기
+  const pageParam = searchParams.get('page')
+  const currentPage = pageParam ? parseInt(pageParam, 10) : 1
+
   // 상태 관리
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
 
   // 발행된 글 목록 가져오기
   const publishedPosts = useMemo(() => getPublishedPosts(), [])
@@ -84,16 +91,42 @@ export default function HomePage() {
     return filteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE)
   }, [filteredPosts, currentPage])
 
-  // 필터 변경 시 첫 페이지로 이동
-  const handleCategoryChange = (category: string | null) => {
-    setSelectedCategory(category)
-    setCurrentPage(1)
-  }
+  // 페이지 변경 핸들러 - URL 업데이트
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (page === 1) {
+        params.delete('page')
+      } else {
+        params.set('page', page.toString())
+      }
+      router.push(`/?${params.toString()}`, { scroll: false })
+    },
+    [router, searchParams]
+  )
 
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query)
-    setCurrentPage(1)
-  }
+  // 필터 변경 시 첫 페이지로 이동
+  const handleCategoryChange = useCallback(
+    (category: string | null) => {
+      setSelectedCategory(category)
+      // Reset to page 1 without calling handlePageChange
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('page')
+      router.push(`/?${params.toString()}`, { scroll: false })
+    },
+    [router, searchParams]
+  )
+
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query)
+      // Reset to page 1 without calling handlePageChange
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('page')
+      router.push(`/?${params.toString()}`, { scroll: false })
+    },
+    [router, searchParams]
+  )
 
   return (
     <Section>
@@ -148,7 +181,7 @@ export default function HomePage() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
             />
           </div>
         )}

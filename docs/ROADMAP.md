@@ -112,22 +112,26 @@ Notion을 Headless CMS로 활용하여 맛집, 여행, 기술 등 다양한 주�
   - 읽기 편한 타이포그래피 적용 (prose 스타일)
   - 관련 글 섹션 레이아웃
 
-- **Task 007: 카테고리 페이지 UI 완성**
+- **Task 007: 카테고리 페이지 UI 완성** ✅ 완료 (See: `/tasks/007-category-page-ui.md`)
 
   - Category Header 구현 (카테고리 이름, 글 개수)
   - 필터링된 글 목록 그리드 (홈과 동일한 PostGrid 재사용)
   - 빈 상태 UI (해당 카테고리에 글이 없을 때)
+  - 페이지네이션 구현
+  - 클라이언트 컴포넌트 변환
 
-- **Task 008: 검색 결과 페이지 UI 완성**
+- **Task 008: 검색 결과 페이지 UI 완성** ✅ 완료 (See: `/tasks/008-search-page-ui.md`)
 
   - 검색 결과 헤더 (검색어, 결과 개수)
   - 검색 결과 글 목록
-  - 검색어 하이라이팅 (선택 사항)
+  - 검색창 통합 (페이지 상단)
+  - URL 쿼리 파라미터 처리
   - 검색 결과 없음 UI
+  - 로딩 및 에러 UI 구현
 
 **완료 기준 (Definition of Done)**:
-- [ ] 모든 페이지가 더미 데이터로 정상 렌더링됨
-- [ ] 반응형 디자인이 모바일/태블릿/데스크톱에서 정상 작동
+- [x] 모든 페이지가 더미 데이터로 정상 렌더링됨
+- [x] 반응형 디자인이 모바일/태블릿/데스크톱에서 정상 작동
 - [ ] 컴포넌트 단위 테스트 작성 완료
 - [ ] 접근성 테스트 통과 (jest-axe)
 
@@ -139,14 +143,15 @@ Notion을 Headless CMS로 활용하여 맛집, 여행, 기술 등 다양한 주�
 >
 > **왜 이 순서인가?**: UI가 완성된 상태에서 API를 연동하면, 데이터 구조 변경에 따른 UI 수정을 최소화할 수 있습니다.
 
-- **Task 009: Notion API 환경 설정** - 우선순위
+- **Task 009: Notion API 환경 설정** ✅ 완료 (See: `/tasks/009-notion-api-setup.md`)
 
-  - `@notionhq/client` 패키지 설치
-  - `.env.local` 및 `.env.example` 파일 생성
-  - Notion API 키 및 데이터베이스 ID 환경 변수 설정
-  - 환경 변수 유효성 검사 유틸리티 작성
+  - `@notionhq/client` 패키지 설치 ✅
+  - `.env.local` 및 `.env.example` 파일 생성 ✅
+  - Notion API 키 및 데이터베이스 ID 환경 변수 설정 ✅
+  - 환경 변수 유효성 검사 유틸리티 작성 (`lib/env.ts`) ✅
+  - Zod 스키마 기반 타입 안전 검증 ✅
 
-- **Task 010: Notion API 클라이언트 및 기본 함수 구현**
+- **Task 010: Notion API 클라이언트 및 기본 함수 구현** - 우선순위
 
   - Notion API 클라이언트 초기화 (`lib/notion/client.ts`)
   - 발행된 글 목록 조회 함수 (`getPublishedPosts()`)

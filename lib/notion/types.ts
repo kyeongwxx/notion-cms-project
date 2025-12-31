@@ -4,13 +4,17 @@
  * Notion API와 블로그 애플리케이션 간의 타입 안전성을 보장합니다.
  * 실제 Notion 데이터베이스 구조를 기반으로 작성되었습니다.
  *
- * @requires @notionhq/client - Notion API 클라이언트 (Task 009에서 설치 예정)
+ * @requires @notionhq/client - Notion API 클라이언트 ✅ Task 009에서 설치 완료
  * @see https://developers.notion.com/reference/property-value-object
  */
 
 /**
- * TODO: Task 009에서 @notionhq/client 설치 후 아래 주석 해제
+ * NOTE: @notionhq/client 설치 완료 ✅
  *
+ * 실제 타입 임포트는 Task 010 (Notion API 클라이언트 구현)에서 진행합니다.
+ * 현재는 기존 Mock 시스템과 호환성을 위해 커스텀 타입을 유지합니다.
+ *
+ * 향후 교체 예정 타입:
  * import type {
  *   PageObjectResponse,
  *   PartialPageObjectResponse,
@@ -23,13 +27,13 @@
  */
 
 // ============================================================================
-// Notion API 기본 타입 (임시 정의 - @notionhq/client 설치 전까지 사용)
+// Notion API 기본 타입 (커스텀 정의)
 // ============================================================================
 
 /**
- * Notion 페이지 객체 응답 (간소화된 버전)
+ * Notion 페이지 객체 응답
  *
- * @notionhq/client 설치 후 실제 타입으로 교체 예정
+ * 실제 @notionhq/client 타입과 호환되도록 설계됨
  */
 export interface PageObjectResponse {
   object: 'page'
@@ -690,6 +694,159 @@ export interface BlockRenderOptions {
   /** 목차 생성 (heading 블록 기반) */
   generateTableOfContents?: boolean
 }
+
+// ============================================================================
+// 구체적인 블록 타입 인터페이스 (Task 011)
+// ============================================================================
+
+/**
+ * 중첩 블록 지원을 위한 재귀적 블록 타입
+ */
+export interface NotionBlockWithChildren extends BlockObjectResponse {
+  /** 자식 블록 목록 (재귀적) */
+  children?: NotionBlockWithChildren[]
+}
+
+/**
+ * Paragraph 블록
+ */
+export interface ParagraphBlock extends BlockObjectResponse {
+  type: 'paragraph'
+  paragraph: {
+    rich_text: RichTextItemResponse[]
+    color: string
+  }
+}
+
+/**
+ * Heading 블록 (1, 2, 3)
+ */
+export interface HeadingBlock extends BlockObjectResponse {
+  type: 'heading_1' | 'heading_2' | 'heading_3'
+  heading_1?: {
+    rich_text: RichTextItemResponse[]
+    color: string
+    is_toggleable: boolean
+  }
+  heading_2?: {
+    rich_text: RichTextItemResponse[]
+    color: string
+    is_toggleable: boolean
+  }
+  heading_3?: {
+    rich_text: RichTextItemResponse[]
+    color: string
+    is_toggleable: boolean
+  }
+}
+
+/**
+ * Bulleted List Item 블록
+ */
+export interface BulletedListItemBlock extends BlockObjectResponse {
+  type: 'bulleted_list_item'
+  bulleted_list_item: {
+    rich_text: RichTextItemResponse[]
+    color: string
+  }
+}
+
+/**
+ * Numbered List Item 블록
+ */
+export interface NumberedListItemBlock extends BlockObjectResponse {
+  type: 'numbered_list_item'
+  numbered_list_item: {
+    rich_text: RichTextItemResponse[]
+    color: string
+  }
+}
+
+/**
+ * Code 블록
+ */
+export interface CodeBlock extends BlockObjectResponse {
+  type: 'code'
+  code: {
+    rich_text: RichTextItemResponse[]
+    caption: RichTextItemResponse[]
+    language: string
+  }
+}
+
+/**
+ * Quote 블록
+ */
+export interface QuoteBlock extends BlockObjectResponse {
+  type: 'quote'
+  quote: {
+    rich_text: RichTextItemResponse[]
+    color: string
+  }
+}
+
+/**
+ * Callout 블록
+ */
+export interface CalloutBlock extends BlockObjectResponse {
+  type: 'callout'
+  callout: {
+    rich_text: RichTextItemResponse[]
+    icon:
+      | { type: 'emoji'; emoji: string }
+      | { type: 'external'; external: { url: string } }
+      | { type: 'file'; file: { url: string; expiry_time: string } }
+      | null
+    color: string
+  }
+}
+
+/**
+ * Divider 블록
+ */
+export interface DividerBlock extends BlockObjectResponse {
+  type: 'divider'
+  divider: Record<string, never> // 빈 객체
+}
+
+/**
+ * Image 블록
+ */
+export interface ImageBlock extends BlockObjectResponse {
+  type: 'image'
+  image: {
+    type: 'external' | 'file'
+    external?: { url: string }
+    file?: { url: string; expiry_time: string }
+    caption: RichTextItemResponse[]
+  }
+}
+
+/**
+ * Toggle 블록
+ */
+export interface ToggleBlock extends BlockObjectResponse {
+  type: 'toggle'
+  toggle: {
+    rich_text: RichTextItemResponse[]
+    color: string
+  }
+}
+
+/**
+ * 모든 렌더링 가능한 블록 타입의 유니온
+ */
+export type RenderableBlock =
+  | ParagraphBlock
+  | HeadingBlock
+  | BulletedListItemBlock
+  | NumberedListItemBlock
+  | CodeBlock
+  | QuoteBlock
+  | CalloutBlock
+  | DividerBlock
+  | ImageBlock
+  | ToggleBlock
 
 // ============================================================================
 // 에러 타입

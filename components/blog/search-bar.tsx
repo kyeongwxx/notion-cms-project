@@ -57,7 +57,8 @@ export function SearchBar({
   // 디바운스된 값이 변경되면 부모에 전달
   useEffect(() => {
     onChange(debouncedValue)
-  }, [debouncedValue, onChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue])
 
   // value prop이 외부에서 변경되면 로컬 상태 동기화
   useEffect(() => {
