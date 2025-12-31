@@ -104,7 +104,7 @@ Notion을 Headless CMS로 활용하여 맛집, 여행, 기술 등 다양한 주�
   - 페이지네이션 또는 더보기 버튼 구현
   - 반응형 레이아웃 적용 (모바일 1열, 태블릿 2열, 데스크톱 3열)
 
-- **Task 006: 글 상세 페이지 UI 완성**
+- **Task 006: 글 상세 페이지 UI 완성** ✅ 완료 (See: `/tasks/006-post-detail-page-ui.md`)
 
   - Article Header 구현 (제목, 메타 정보, 커버 이미지)
   - Article Content 영역 레이아웃 (본문 영역 스타일링)
